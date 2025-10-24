@@ -95,6 +95,8 @@ public class PlayManager {
 
             if(currentMino.b[0].x == MINO_START_X && currentMino.b[0].y == MINO_START_Y){
                 gameOver = true;
+                GamePanel.music.stop();
+                GamePanel.se.play(3, false);
             }
 
             currentMino = nextMino;
@@ -157,6 +159,7 @@ public class PlayManager {
             }
         }
         if(lineCount > 0){
+            GamePanel.se.play(4, false);
             int singleLineScore = 10 * level;
             score += singleLineScore * lineCount;
         }
@@ -269,6 +272,27 @@ public class PlayManager {
         g2.setFont(new Font("Times New Roman", Font.ITALIC, 60));
         g2.drawString("Tetris Simples", 35 + 20, top_y + 320);
     }
+    public void resetGame() {
+        staticBlocks.clear(); // limpa os blocos já fixos
+        currentMino = pickMino();
+        currentMino.setXY(MINO_START_X, MINO_START_Y);
+        nextMino = pickMino();
+        nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
+
+        level = 1;
+        lines = 0;
+        score = 0;
+        dropInterval = 60;
+        gameOver = false;
+        effectCounterOn = false;
+        effectY.clear();
+
+        // Reinicia a música se quiser
+        GamePanel.music.play(0, true);
+
+        System.out.println("Jogo reiniciado!");
+    }
+
 }
 
 
