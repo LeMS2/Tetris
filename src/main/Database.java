@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Database {
 
-    private static final String URL = "jdbc:sqlite:tetris.db";
+    private static final String URL = "jdbc:sqlite:/home/leticia/Documentos/Tetris/tetris.db";
 
     public static Connection connect() {
         Connection conn = null;

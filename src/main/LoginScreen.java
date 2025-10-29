@@ -14,26 +14,75 @@ public class LoginScreen extends JFrame {
 
     public LoginScreen() {
         setTitle("Login - Tetris");
+        setIconImage(new ImageIcon("/home/leticia/Documentos/Tetris/assets/tetris.png").getImage());
         setSize(400, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 2, 10, 10));
 
+        // Painel principal com gradiente de fundo
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                Color color1 = new Color(15, 15, 15);
+                Color color2 = new Color(40, 40, 40);
+                GradientPaint gp = new GradientPaint(0, 0, color1, 0, getHeight(), color2);
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+
+        panel.setLayout(new GridLayout(4, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Labels com texto branco
         JLabel nomeLabel = new JLabel("Nome:");
         JLabel emailLabel = new JLabel("Email:");
         JLabel idadeLabel = new JLabel("Idade:");
+        nomeLabel.setForeground(Color.WHITE);
+        emailLabel.setForeground(Color.WHITE);
+        idadeLabel.setForeground(Color.WHITE);
 
+        // Campos de entrada
         nomeField = new JTextField();
         emailField = new JTextField();
         idadeField = new JTextField();
 
+        // Botão estilizado
         entrarButton = new JButton("Entrar");
+        entrarButton.setBackground(new Color(60, 60, 60));
+        entrarButton.setForeground(Color.WHITE);
+        entrarButton.setFocusPainted(false);
+        entrarButton.setFont(new Font("Arial", Font.BOLD, 14));
+        entrarButton.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
+        entrarButton.setOpaque(true);
 
-        add(nomeLabel); add(nomeField);
-        add(emailLabel); add(emailField);
-        add(idadeLabel); add(idadeField);
-        add(new JLabel()); add(entrarButton);
+        // Efeito de brilho ao passar o mouse
+        entrarButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                entrarButton.setBackground(new Color(90, 90, 90));
+            }
 
+            public void mouseExited(MouseEvent e) {
+                entrarButton.setBackground(new Color(60, 60, 60));
+            }
+        });
+
+        // Adiciona os componentes ao painel
+        panel.add(nomeLabel);
+        panel.add(nomeField);
+        panel.add(emailLabel);
+        panel.add(emailField);
+        panel.add(emailField);
+        panel.add(idadeLabel);
+        panel.add(idadeField);
+        panel.add(new JLabel());
+        panel.add(entrarButton);
+
+        add(panel);
+
+        // Ação do botão
         entrarButton.addActionListener(e -> salvarJogador());
 
         setVisible(true);
@@ -84,7 +133,16 @@ public class LoginScreen extends JFrame {
 
             JOptionPane.showMessageDialog(this, "Login realizado com sucesso!");
             dispose();
-            new PrincipalMenu(nome);
+            dispose();
+            JFrame frame = new JFrame("Tetris - " + nome);
+            GamePanel gamePanel = new GamePanel(nome, email, Integer.parseInt(idade));
+            frame.add(gamePanel);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+            gamePanel.launchGame();
+
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar jogador: " + ex.getMessage());

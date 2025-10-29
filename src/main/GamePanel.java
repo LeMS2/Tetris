@@ -14,58 +14,46 @@ public class GamePanel extends JPanel implements Runnable {
     public static Sound music = new Sound();
     public static Sound se = new Sound();
 
-    // 🔹 Botões
-    JButton btnReiniciar;
-    JButton btnMenu; // caso queira usar depois
+    // 🔹 Dados do jogador
+    private String playerName;
+    private String playerEmail;
+    private int playerAge;
 
-    public GamePanel() {
+    // 🔹 Botão Reiniciar
+    JButton btnReiniciar;
+
+    // 🔸 Novo construtor que recebe os dados do jogador
+    public GamePanel(String name, String email, int age) {
+        this.playerName = name;
+        this.playerEmail = email;
+        this.playerAge = age;
 
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.black);
-        this.setLayout(null); // necessário para posicionar os botões manualmente
+        this.setLayout(null);
         this.addKeyListener(new KeyHandler());
         this.setFocusable(true);
 
-        // 🔹 Gerenciador do jogo
-        pm = new PlayManager();
+        // 🔹 Passa os dados do jogador pro PlayManager
+        pm = new PlayManager(name, email, age);
 
-        // Certifique-se de que o JPanel usa layout nulo
-        this.setLayout(null);
-
-// 🔸 BOTÃO REINICIAR
+        // 🔸 BOTÃO REINICIAR
         btnReiniciar = new JButton("Reiniciar");
-        btnReiniciar.setBounds(20, 10, 120, 40); // lado esquerdo, topo
+        btnReiniciar.setBounds(20, 10, 120, 40);
         btnReiniciar.setFocusPainted(false);
         btnReiniciar.setBackground(new Color(50, 50, 50));
         btnReiniciar.setForeground(Color.WHITE);
         btnReiniciar.setFont(new Font("Arial", Font.BOLD, 16));
 
         btnReiniciar.addActionListener(e -> {
-            pm.resetGame(); // reinicia o jogo
-            requestFocusInWindow(); // volta o foco pro jogo
+            pm.resetGame();
+            requestFocusInWindow();
             repaint();
         });
         this.add(btnReiniciar);
-
-// 🔸 BOTÃO MENU PRINCIPAL
-        btnMenu = new JButton("Menu Principal");
-        btnMenu.setBounds(20, 60, 120, 40); // abaixo do botão reiniciar
-        btnMenu.setFocusPainted(false);
-        btnMenu.setBackground(new Color(50, 50, 50));
-        btnMenu.setForeground(Color.WHITE);
-        btnMenu.setFont(new Font("Arial", Font.BOLD, 16));
-
-        btnMenu.addActionListener(e -> {
-            // Caso tenha uma tela de menu:
-            // new MenuPrincipal().setVisible(true);
-            // ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
-            System.out.println("Voltar ao menu (implemente se desejar)");
-        });
-        this.add(btnMenu);
     }
 
     // 🔹 Inicia o loop do jogo
-    // =============================
     public void launchGame() {
         gameThread = new Thread(this);
         gameThread.start();
@@ -74,9 +62,6 @@ public class GamePanel extends JPanel implements Runnable {
         music.loop();
     }
 
-    // =============================
-    // 🔹 Loop principal
-    // =============================
     @Override
     public void run() {
         double drawInterval = 1000000000 / FPS;
@@ -97,18 +82,12 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    // =============================
-    // 🔹 Atualização do jogo
-    // =============================
     private void update() {
         if (!KeyHandler.pausePressed && !pm.gameOver) {
             pm.update();
         }
     }
 
-    // =============================
-    // 🔹 Desenho
-    // =============================
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
