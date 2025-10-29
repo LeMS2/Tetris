@@ -63,9 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
         });
         this.add(btnMenu);
     }
-    //gfg
 
-        // =============================
     // 🔹 Inicia o loop do jogo
     // =============================
     public void launchGame() {
